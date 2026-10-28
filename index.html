@@ -1,245 +1,250 @@
 
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090c15">
-  <title>CLIFOUNER Business AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: Arial, sans-serif; }
-    .panel { background:#121725; border:1px solid #293247; border-radius:16px; padding:18px; }
-    input, textarea { background:#0b1020; border:1px solid #344056; border-radius:9px; padding:12px; width:100%; color:white; }
-    button { cursor:pointer; border-radius:9px; padding:11px 15px; font-weight:bold; }
-    .primary { background:#22d3ee; color:#07111c; }
-    .secondary { background:#293247; color:white; }
-    .output { white-space:pre-wrap; overflow-wrap:anywhere; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLIFOUNER Business AI</title>
+<style>
+:root {
+  --accent: #8b4513;
+  --bg: #fffaf0;
+  --card: #ffffff;
+  --text: #30231d;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .8s, color .8s;
+}
+header {
+  background: var(--accent);
+  color: white;
+  padding: 22px 16px;
+  text-align: center;
+}
+header h1 { margin: 0 0 8px; font-size: 26px; }
+header p { margin: 0; }
+main { max-width: 850px; margin: auto; padding: 18px; }
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 18px;
+  margin: 16px 0;
+  box-shadow: 0 4px 18px #00000012;
+  border-top: 4px solid var(--accent);
+}
+h2 { margin-top: 0; }
+button {
+  background: var(--accent);
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 5px 3px 5px 0;
+}
+button:active { transform: scale(.98); }
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  font: inherit;
+}
+textarea { min-height: 100px; resize: vertical; }
+.status { font-size: 14px; opacity: .8; }
+#answer {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.droplet {
+  position: fixed;
+  top: -30px;
+  z-index: 5;
+  pointer-events: none;
+  animation: fall linear forwards;
+  opacity: .45;
+}
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+footer { text-align: center; padding: 24px; font-size: 13px; }
+</style>
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100">
-  <header class="p-5 border-b border-slate-800">
-    <h1 class="text-2xl font-black">CLIFOUNER <span class="text-cyan-400">Business AI</span></h1>
-    <p class="text-slate-400 mt-2">Your business planning and marketing workspace</p>
-  </header>
+<body>
+<header>
+  <h1>CLIFOUNER Business AI</h1>
+  <p>Your friendly AI business assistant</p>
+</header>
 
-  <main class="max-w-4xl mx-auto p-4 space-y-4">
-    <div class="panel">
-      <h2 class="text-xl font-bold mb-3">Aura AI Assistant</h2>
-      <p class="text-sm text-slate-400 mb-3">Ask questions about your business, marketing, customers, or plans.</p>
-      <form id="chatForm" class="space-y-3">
-        <textarea id="chatInput" rows="3" maxlength="4000" placeholder="Ask Aura a question..." required></textarea>
-        <button class="primary" id="chatButton" type="submit">Ask Aura</button>
-      </form>
-      <div id="chatOutput" class="output mt-4 text-sm" aria-live="polite"></div>
-    </div>
+<main>
+  <section class="card">
+    <h2>👋 Welcome</h2>
+    <p>Plan ideas, write business content, and ask Aura AI for help.</p>
+    <p class="status">Dashboard theme changes automatically.</p>
+    <button onclick="changeTheme()">🎨 Change Colours</button>
+  </section>
 
-    <div class="panel">
-      <h2 class="text-xl font-bold mb-3">AI Business Plan Generator</h2>
-      <input id="businessIdea" placeholder="Your business idea">
-      <input id="targetAudience" class="mt-3" placeholder="Target customers">
-      <button id="planButton" class="primary mt-3">Generate Business Plan</button>
-      <div id="planOutput" class="output mt-4 text-sm" aria-live="polite"></div>
-    </div>
+  <section class="card">
+    <h2>🤖 Aura AI Assistant</h2>
+    <p>Ask a question or request help with your business.</p>
+    <textarea id="question" placeholder="Example: Give me a business idea I can start with no money..."></textarea>
+    <button id="askBtn" onclick="askAura()">Ask Aura AI</button>
+    <div id="status" class="status" role="status">Ready for your question.</div>
+    <div id="answer"></div>
+  </section>
 
-    <div class="panel">
-      <h2 class="text-xl font-bold mb-3">Marketing Content Generator</h2>
-      <input id="productName" placeholder="Product or store name">
-      <textarea id="productFeatures" rows="3" class="mt-3" placeholder="Describe the product and its features"></textarea>
-      <button id="marketingButton" class="primary mt-3">Generate Marketing Content</button>
-      <div id="marketingOutput" class="output mt-4 text-sm" aria-live="polite"></div>
-    </div>
+  <section class="card">
+    <h2>💡 Business Idea Generator</h2>
+    <select id="budget">
+      <option value="no money">No money</option>
+      <option value="small budget">Small budget</option>
+      <option value="growing business">Growing a business</option>
+    </select>
+    <button onclick="generateIdea()">Generate Business Prompt</button>
+    <textarea id="idea" placeholder="Your business prompt will appear here."></textarea>
+    <button onclick="copyIdea()">Copy Prompt</button>
+  </section>
 
-    <div class="panel">
-      <h2 class="text-xl font-bold mb-3">Landing Page Builder</h2>
-      <input id="siteName" placeholder="Business name">
-      <input id="siteHeadline" class="mt-3" placeholder="Main headline">
-      <textarea id="siteDescription" class="mt-3" rows="2" placeholder="Describe your business"></textarea>
-      <button id="buildButton" class="primary mt-3">Build Preview</button>
-      <div id="sitePreview" class="mt-4 rounded-xl bg-white text-slate-900 p-5"></div>
-    </div>
+  <section class="card">
+    <h2>📝 Business Content Writer</h2>
+    <input id="topic" placeholder="Enter a product, service, or business topic">
+    <button onclick="writeContent()">Create Marketing Text</button>
+    <textarea id="content" placeholder="Your marketing text will appear here."></textarea>
+    <button onclick="copyContent()">Copy Text</button>
+  </section>
+</main>
 
-    <div class="panel">
-      <h2 class="text-xl font-bold mb-3">Sales Ledger</h2>
-      <form id="saleForm" class="space-y-3">
-        <input id="saleDescription" placeholder="Sale description" required>
-        <input id="saleAmount" type="number" min="0.01" step="0.01" placeholder="Amount" required>
-        <button class="primary" type="submit">Record Sale</button>
-      </form>
-      <p class="text-slate-400 text-sm mt-3">These records are saved in this browser only, not in a shared online database.</p>
-      <ul id="salesList" class="mt-3 space-y-2"></ul>
-    </div>
+<footer>CLIFOUNER Business AI · Build ideas. Create value. Grow steadily.</footer>
 
-    <div class="panel">
-      <h2 class="text-xl font-bold mb-2">Support Guidelines</h2>
-      <textarea id="supportGuidelines" rows="4">Enter your actual shipping, return, and customer-support policies here.</textarea>
-      <button id="saveGuidelines" class="secondary mt-3">Save Guidelines on This Device</button>
-      <p id="guidelineStatus" class="text-sm mt-2" aria-live="polite"></p>
-    </div>
+<script>
+const themes = [
+  { accent: "#8b4513", bg: "#fffaf0", text: "#30231d" },
+  { accent: "#c62828", bg: "#fff5f5", text: "#351515" },
+  { accent: "#d6a900", bg: "#fffbea", text: "#342b0b" },
+  { accent: "#d63384", bg: "#fff4fa", text: "#40172e" },
+  { accent: "#800000", bg: "#fff5f5", text: "#351515" },
+  { accent: "#5b9b50", bg: "#f4fff1", text: "#1e321b" }
+];
+let themeIndex = 0;
 
-    <p id="status" class="text-sm text-slate-400" aria-live="polite">Ready. AI features require the backend to be deployed and configured.</p>
-  </main>
+function applyTheme() {
+  const t = themes[themeIndex];
+  document.documentElement.style.setProperty("--accent", t.accent);
+  document.documentElement.style.setProperty("--bg", t.bg);
+  document.documentElement.style.setProperty("--text", t.text);
+}
+function changeTheme() {
+  themeIndex = (themeIndex + 1) % themes.length;
+  applyTheme();
+}
+applyTheme();
+setInterval(changeTheme, 12000);
 
-  <script>
-    const $ = id => document.getElementById(id);
+function makeDroplet() {
+  const d = document.createElement("span");
+  d.className = "droplet";
+  d.textContent = "💧";
+  d.style.left = Math.random() * 100 + "vw";
+  d.style.fontSize = (12 + Math.random() * 18) + "px";
+  d.style.animationDuration = (5 + Math.random() * 6) + "s";
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 12000);
+}
+setInterval(makeDroplet, 1800);
 
-    async function askAI(prompt) {
-      const response = await fetch("/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt })
-      });
+async function askAura() {
+  const question = document.getElementById("question").value.trim();
+  const status = document.getElementById("status");
+  const answer = document.getElementById("answer");
+  const btn = document.getElementById("askBtn");
 
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        throw new Error("The AI server returned an invalid response.");
-      }
+  if (!question) {
+    status.textContent = "Please type a question first.";
+    return;
+  }
 
-      if (!response.ok) {
-        throw new Error(data.error || "The AI request failed.");
-      }
-      if (typeof data.text !== "string" || !data.text.trim()) {
-        throw new Error("The AI returned an empty response.");
-      }
-      return data.text;
+  status.textContent = "Connecting to Aura AI...";
+  answer.textContent = "";
+  btn.disabled = true;
+
+  try {
+    const response = await fetch("/api/ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question })
+    });
+
+    const raw = await response.text();
+    let data = {};
+    try { data = JSON.parse(raw); }
+    catch { throw new Error("The server returned a non-JSON response. The AI backend may not be deployed."); }
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI server error (" + response.status + ").");
     }
 
-    async function runAI(button, output, prompt) {
-      button.disabled = true;
-      output.textContent = "Contacting AI service...";
-      try {
-        output.textContent = await askAI(prompt);
-      } catch (error) {
-        output.textContent = "AI unavailable: " + error.message;
-      } finally {
-        button.disabled = false;
-      }
+    const result = data.answer || data.response || data.output ||
+      (data.result && (data.result.response || data.result.output));
+
+    if (typeof result !== "string" || !result.trim()) {
+      throw new Error(data.error || "The server responded, but no answer was found. Check your AI backend configuration.");
     }
 
-    $("chatForm").addEventListener("submit", event => {
-      event.preventDefault();
-      const prompt = $("chatInput").value.trim();
-      if (!prompt) return;
-      runAI($("chatButton"), $("chatOutput"), prompt);
-    });
+    answer.textContent = result;
+    status.textContent = "Aura AI replied.";
+  } catch (err) {
+    status.textContent = "Aura AI is not connected.";
+    answer.textContent = "Problem: " + err.message +
+      "\n\nImportant: GitHub Pages only hosts static files. It cannot run the /api/ai backend. Deploy the project to a supported backend host and configure its AI service before Aura can answer real questions.";
+  } finally {
+    btn.disabled = false;
+  }
+}
 
-    $("planButton").addEventListener("click", () => {
-      const idea = $("businessIdea").value.trim();
-      const audience = $("targetAudience").value.trim();
-      if (!idea) {
-        $("planOutput").textContent = "Enter your business idea first.";
-        return;
-      }
-      runAI(
-        $("planButton"),
-        $("planOutput"),
-        `Create a practical business plan for this idea: ${idea}.
-Target audience: ${audience || "Not specified"}.
-Include the problem, customers, proposed solution, MVP, marketing plan, costs to investigate, risks, and a realistic validation plan. Do not guarantee earnings.`
-      );
-    });
-
-    $("marketingButton").addEventListener("click", () => {
-      const name = $("productName").value.trim();
-      const features = $("productFeatures").value.trim();
-      if (!name || !features) {
-        $("marketingOutput").textContent = "Enter the product name and features first.";
-        return;
-      }
-      runAI(
-        $("marketingButton"),
-        $("marketingOutput"),
-        `Create marketing content for ${name}. Product details: ${features}.
-Write a headline, product description, social media post, call to action, and three hashtags. Do not invent claims or guarantees.`
-      );
-    });
-
-    $("buildButton").addEventListener("click", () => {
-      const name = $("siteName").value.trim() || "My Business";
-      const headline = $("siteHeadline").value.trim() || "Welcome to our business";
-      const description = $("siteDescription").value.trim() || "Learn more about what we offer.";
-      const preview = $("sitePreview");
-      preview.replaceChildren();
-
-      const title = document.createElement("h2");
-      title.className = "text-2xl font-bold";
-      title.textContent = name;
-
-      const heading = document.createElement("h3");
-      heading.className = "text-xl mt-4";
-      heading.textContent = headline;
-
-      const paragraph = document.createElement("p");
-      paragraph.className = "mt-3";
-      paragraph.textContent = description;
-
-      preview.append(title, heading, paragraph);
-    });
-
-    const STORAGE_KEY = "clifouner_sales_v1";
-    let sales = [];
-    try {
-      sales = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      if (!Array.isArray(sales)) sales = [];
-    } catch {
-      sales = [];
-    }
-
-    function renderSales() {
-      const list = $("salesList");
-      list.replaceChildren();
-      sales.forEach(sale => {
-        const item = document.createElement("li");
-        item.className = "flex justify-between gap-3 border-b border-slate-700 py-2";
-        const description = document.createElement("span");
-        description.textContent = `${sale.date} — ${sale.description}`;
-        const amount = document.createElement("strong");
-        amount.textContent = Number(sale.amount).toFixed(2);
-        item.append(description, amount);
-        list.append(item);
-      });
-    }
-
-    $("saleForm").addEventListener("submit", event => {
-      event.preventDefault();
-      const description = $("saleDescription").value.trim();
-      const amount = Number($("saleAmount").value);
-      if (!description || !Number.isFinite(amount) || amount <= 0) return;
-
-      sales.unshift({
-        date: new Date().toISOString().slice(0, 10),
-        description,
-        amount
-      });
-
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(sales));
-        renderSales();
-        $("saleForm").reset();
-      } catch {
-        $("status").textContent = "Could not save sales data on this device.";
-      }
-    });
-
-    const savedGuidelines = localStorage.getItem("clifouner_support_guidelines");
-    if (savedGuidelines) $("supportGuidelines").value = savedGuidelines;
-
-    $("saveGuidelines").addEventListener("click", () => {
-      try {
-        localStorage.setItem(
-          "clifouner_support_guidelines",
-          $("supportGuidelines").value
-        );
-        $("guidelineStatus").textContent = "Saved on this device.";
-      } catch {
-        $("guidelineStatus").textContent = "Could not save on this device.";
-      }
-    });
-
-    renderSales();
-    $("buildButton").click();
-  </script>
+function generateIdea() {
+  const budget = document.getElementById("budget").value;
+  document.getElementById("idea").value =
+    "Act as a practical business mentor. Suggest one realistic business idea suitable for " +
+    budget + ". Explain the customer problem, target customers, free or low-cost tools, " +
+    how to find the first 5 customers, a 7-day action plan, possible expenses, and risks. " +
+    "Do not promise income or claim the idea is guaranteed to succeed.";
+}
+function writeContent() {
+  const topic = document.getElementById("topic").value.trim();
+  if (!topic) {
+    alert("Enter a business topic first.");
+    return;
+  }
+  document.getElementById("content").value =
+    "Write friendly, honest marketing content for: " + topic +
+    ". Include a clear headline, benefits, a short social media post, and a call to action. " +
+    "Do not invent product features or make unsupported claims.";
+}
+async function copyText(id) {
+  const el = document.getElementById(id);
+  if (!el.value.trim()) {
+    alert("Generate some text first.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(el.value);
+    alert("Copied!");
+  } catch {
+    el.select();
+    document.execCommand("copy");
+    alert("Copy attempted. Check the selected text.");
+  }
+}
+function copyIdea() { copyText("idea"); }
+function copyContent() { copyText("content"); }
+</script>
 </body>
 </html>
