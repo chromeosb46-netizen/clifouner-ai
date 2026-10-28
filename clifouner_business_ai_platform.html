@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#0b0e17] text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLIFOUNER Business AI — Unify Operating System</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ========================================================================= */
+    /* DYNAMIC AUTO-CHANGING NEON COLOR ENGINE */
+    /* ========================================================================= */
+    @keyframes dynamicHueCycle {
+      0% { filter: hue-rotate(0deg); }
+      25% { filter: hue-rotate(90deg); }
+      50% { filter: hue-rotate(180deg); }
+      75% { filter: hue-rotate(270deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* Applied to active highlights, neon borders, and key AI badges */
+    .auto-hue-shift {
+      animation: dynamicHueCycle 18s linear infinite;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f1422;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #252e48;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b486b;
+    }
+
+    /* Card Aesthetics matching reference image */
+    .widget-card {
+      background: rgba(18, 23, 37, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 1rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .widget-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .neon-border-glow {
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
+    }
+
+    /* Waveform Animation Mock */
+    @keyframes wavePulse {
+      0%, 100% { height: 6px; }
+      50% { height: 28px; }
+    }
+    .wave-bar {
+      animation: wavePulse 1.2s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(2n) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(3n) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(4n) { animation-delay: 0.1s; }
+  </style>
+</head>
+<body class="h-full font-sans antialiased bg-[#090c15] text-slate-100 flex flex-col overflow-hidden">
+
+  <!-- ========================================================================= -->
+  <!-- TOP NAVIGATION BAR (Matching Reference Header) -->
+  <!-- ========================================================================= -->
+  <header class="h-16 border-b border-slate-800/80 bg-[#0f1422]/90 backdrop-blur-md px-6 flex items-center justify-between z-30">
+    
+    <!-- Left Logo & Top Nav Tabs -->
+    <div class="flex items-center space-x-8">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('dashboard')">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-fuchsia-500 flex items-center justify-center text-white font-black text-lg auto-hue-shift shadow-lg">
+          U
+        </div>
+        <span class="font-bold text-sm tracking-wider text-white">CLIFOUNER <span class="text-cyan-400 font-extrabold text-xs">SUITE</span></span>
+      </div>
+
+      <!-- Module Navigation Pills -->
+      <nav class="hidden lg:flex items-center space-x-1 text-xs font-semibold">
+        <button onclick="switchView('dashboard')" data-nav="dashboard" class="top-nav-btn active px-4 py-2 rounded-lg bg-indigo-600 text-white font-bold transition">Dashboard</button>
+        <button onclick="switchView('business-plan')" data-nav="business-plan" class="top-nav-btn px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition">Hiring & Strategy</button>
+        <button onclick="switchView('copy-generator')" data-nav="copy-generator" class="top-nav-btn px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition">CRM & Marketing</button>
+        <button onclick="switchView('support-bot')" data-nav="support-bot" class="top-nav-btn px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition">Support & Tickets</button>
+        <button onclick="switchView('sales-tracker')" data-nav="sales-tracker" class="top-nav-btn px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition">Analytics</button>
+        <button onclick="switchView('page-builder')" data-nav="page-builder" class="top-nav-btn px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition">Social & Site</button>
+        <button onclick="switchView('shopify-sync')" data-nav="shopify-sync" class="top-nav-btn px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition">Storefront</button>
+      </nav>
+    </div>
+
+    <!-- Right Header Utilities -->
+    <div class="flex items-center space-x-4">
+      <div class="relative hidden sm:block">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-500"></i>
+        <input type="text" placeholder="Search parameters, modules..." class="pl-8 pr-4 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 w-48">
+      </div>
+
+      <button id="toggleApiKeyBtn" class="text-slate-400 hover:text-cyan-400 text-xs p-2 rounded-lg bg-slate-900 border border-slate-800">
+        <i class="fa-solid fa-key"></i>
+      </button>
+
+      <!-- User Profile Dropdown -->
+      <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 cursor-pointer" onclick="switchView('account-plans')">
+        <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 text-white font-bold text-[10px] flex items-center justify-center">
+          A
+        </div>
+        <span class="text-xs font-semibold text-slate-200">Admin</span>
+        <i class="fa-solid fa-chevron-down text-[10px] text-slate-500"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed top-20 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- MAIN DASHBOARD CONTENT AREA -->
+  <div class="flex-1 overflow-hidden flex">
+    
+    <!-- LEFT MAIN WORKSPACE CONTAINER -->
+    <main class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
+
+      <!-- TOP NEON GLOWING AI INSIGHTS BANNER (Matching Reference) -->
+      <div class="p-3 px-5 rounded-2xl bg-gradient-to-r from-purple-900/40 via-slate-900 to-cyan-900/40 border border-indigo-500/30 flex items-center justify-between text-xs auto-hue-shift">
+        <div class="flex items-center space-x-3 truncate">
+          <span class="p-1 px-2.5 rounded-full bg-purple-500/20 text-purple-300 font-bold text-[10px] flex items-center space-x-1 border border-purple-500/30">
+            <i class="fa-solid fa-sparkles text-[10px]"></i>
+            <span>AI Insights</span>
+          </span>
+          <span class="text-slate-200 truncate">
+            Q3 Revenue <strong class="text-emerald-400">+18%</strong>, Customer Satisfaction <strong class="text-cyan-400">92%</strong>, Pipeline Health: <strong class="text-emerald-400">Strong</strong>
+          </span>
+        </div>
+        <button onclick="switchView('business-plan')" class="hidden sm:block text-slate-400 hover:text-white text-[11px] font-semibold">
+          Details <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i>
+        </button>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 1: MAIN EXECUTIVE DASHBOARD GRID (Sourced directly from user image) -->
+      <!-- ========================================================================= -->
+      <section id="view-dashboard" class="view-section space-y-4">
+        
+        <!-- ROW 1: HIRING PIPELINE & CRM DEAL BOARD -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          <!-- WIDGET 1: Hiring Pipeline -->
+          <div class="lg:col-span-6 widget-card p-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                <i class="fa-solid fa-users text-cyan-400"></i>
+                <span>Hiring Pipeline</span>
+              </h3>
+              <button onclick="switchView('business-plan')" class="text-[10px] text-slate-400 hover:text-cyan-400">View All</button>
+            </div>
+
+            <!-- Pipeline Columns -->
+            <div class="grid grid-cols-4 gap-2 text-center text-[10px] mb-3">
+              <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+                <span class="text-slate-400 font-medium">New Candidates</span>
+                <div class="font-bold text-white text-xs mt-1">12</div>
+              </div>
+              <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+                <span class="text-slate-400 font-medium">Screening</span>
+                <div class="font-bold text-cyan-400 text-xs mt-1">5</div>
+              </div>
+              <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+                <span class="text-slate-400 font-medium">Interview</span>
+                <div class="font-bold text-purple-400 text-xs mt-1">3</div>
+              </div>
+              <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+                <span class="text-slate-400 font-medium">Offer</span>
+                <div class="font-bold text-emerald-400 text-xs mt-1">2</div>
+              </div>
+            </div>
+
+            <!-- Candidate Avatars Grid -->
+            <div class="grid grid-cols-2 gap-2">
+              <div class="p-2 rounded-xl bg-slate-900/50 border border-slate-800 flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-xs flex items-center justify-center">SG</div>
+                <div class="truncate text-left">
+                  <div class="text-[11px] font-bold text-slate-200">Sophia Garcia</div>
+                  <div class="text-[9px] text-emerald-400">89% Match</div>
+                </div>
+              </div>
+
+              <div class="p-2 rounded-xl bg-slate-900/50 border border-slate-800 flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center">HB</div>
+                <div class="truncate text-left">
+                  <div class="text-[11px] font-bold text-slate-200">Holly Baker</div>
+                  <div class="text-[9px] text-emerald-400">92% Match</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WIDGET 2: CRM Deal Board -->
+          <div class="lg:col-span-6 widget-card p-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                <i class="fa-solid fa-chart-column text-indigo-400"></i>
+                <span>CRM Deal Board</span>
+              </h3>
+              <span class="text-[10px] text-slate-400">Pipelines</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 items-center">
+              <div>
+                <span class="text-[10px] text-slate-400 uppercase font-semibold">Total Pipeline Value</span>
+                <div class="text-xl font-black text-white">$2.4M</div>
+                <span class="text-[10px] text-emerald-400 font-bold">+14% vs last month</span>
+              </div>
+
+              <!-- Circular Progress Gauge -->
+              <div class="text-center flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full border-4 border-slate-800 border-t-cyan-400 border-r-indigo-500 flex items-center justify-center auto-hue-shift">
+                  <span class="text-xs font-bold text-white">75%</span>
+                </div>
+                <span class="text-[9px] text-slate-400 mt-1">Monthly Goal Achieved</span>
+              </div>
+
+              <!-- Sales Bar Graph Mock -->
+              <div class="h-16 flex items-end justify-between space-x-1">
+                <div class="w-2 bg-indigo-500/40 rounded-t h-[40%]"></div>
+                <div class="w-2 bg-indigo-500/60 rounded-t h-[60%]"></div>
+                <div class="w-2 bg-cyan-400 rounded-t h-[85%] auto-hue-shift"></div>
+                <div class="w-2 bg-indigo-500/50 rounded-t h-[50%]"></div>
+                <div class="w-2 bg-fuchsia-500 rounded-t h-[95%] auto-hue-shift"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ROW 2: SUPPORT TICKETS & VOICE CALL ANALYTICS -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          <!-- WIDGET 3: Support Tickets -->
+          <div class="lg:col-span-6 widget-card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                <i class="fa-solid fa-ticket text-amber-400"></i>
+                <span>Support Tickets</span>
+              </h3>
+              <span class="text-[10px] text-slate-400">Active (18)</span>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div class="p-2 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between">
+                <div class="flex items-center space-x-2 truncate">
+                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                  <span class="font-bold text-slate-200 truncate">Issue with API checkout webhooks</span>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-rose-500/20 text-rose-300">High</span>
+              </div>
+
+              <div class="p-2 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between">
+                <div class="flex items-center space-x-2 truncate">
+                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span class="font-bold text-slate-200 truncate">Storefront domain SSL update</span>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-400/20 text-amber-300">Medium</span>
+              </div>
+
+              <div class="p-2 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between">
+                <div class="flex items-center space-x-2 truncate">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span class="font-bold text-slate-200 truncate">Shopify catalog sync inquiry</span>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-400/20 text-emerald-300">Low</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- WIDGET 4: Voice Call Analytics -->
+          <div class="lg:col-span-6 widget-card p-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                <i class="fa-solid fa-microphone-lines text-cyan-400"></i>
+                <span>Voice Call Analytics</span>
+              </h3>
+              <span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Live Stream</span>
+            </div>
+
+            <!-- Waveform Animation Display -->
+            <div class="h-10 bg-slate-900/90 rounded-xl border border-slate-800 flex items-center justify-center space-x-1 px-4 my-2">
+              <div class="w-1 bg-cyan-400 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-indigo-500 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-fuchsia-500 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-cyan-400 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-indigo-400 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-emerald-400 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-cyan-400 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-indigo-500 rounded wave-bar auto-hue-shift"></div>
+              <div class="w-1 bg-fuchsia-500 rounded wave-bar auto-hue-shift"></div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Avg Call Duration: <strong class="text-white">4:32</strong></span>
+              <span>Satisfaction Index: <strong class="text-cyan-400">8.5/10</strong></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ROW 3: SOCIAL MEDIA SCHEDULER & STOREFRONT ORDERS -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          <!-- WIDGET 5: Social Media Scheduler -->
+          <div class="lg:col-span-6 widget-card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                <i class="fa-solid fa-calendar-days text-fuchsia-400"></i>
+                <span>Social Media Scheduler</span>
+              </h3>
+              <button onclick="switchView('copy-generator')" class="text-[10px] text-slate-400 hover:text-fuchsia-400">+ New Post</button>
+            </div>
+
+            <div class="grid grid-cols-7 gap-1 text-center text-[10px] text-slate-400 font-semibold mb-2">
+              <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+            </div>
+
+            <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold">
+              <div class="p-1.5 rounded-lg bg-slate-900/60 text-slate-500">24</div>
+              <div class="p-1.5 rounded-lg bg-slate-900/60 text-slate-500">25</div>
+              <div class="p-1.5 rounded-lg bg-slate-900/60 text-slate-500">26</div>
+              <div class="p-1.5 rounded-lg bg-indigo-600 text-white auto-hue-shift">27</div>
+              <div class="p-1.5 rounded-lg bg-cyan-600/40 text-cyan-200">28</div>
+              <div class="p-1.5 rounded-lg bg-slate-900/60 text-slate-300">29</div>
+              <div class="p-1.5 rounded-lg bg-slate-900/60 text-slate-300">30</div>
+            </div>
+          </div>
+
+          <!-- WIDGET 6: Storefront Orders -->
+          <div class="lg:col-span-6 widget-card p-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                <i class="fa-brands fa-shopify text-emerald-400"></i>
+                <span>Storefront Orders</span>
+              </h3>
+              <button onclick="switchView('shopify-sync')" class="text-[10px] text-slate-400 hover:text-emerald-400">Sync Shopify</button>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                <div class="flex items-center space-x-2">
+                  <i class="fa-solid fa-box text-emerald-400"></i>
+                  <span class="font-bold text-slate-200">#1082 - Bernard Rivers</span>
+                </div>
+                <span class="font-mono text-emerald-400 font-bold">$267.00</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                <div class="flex items-center space-x-2">
+                  <i class="fa-solid fa-box text-cyan-400"></i>
+                  <span class="font-bold text-slate-200">#1083 - Akiko Karlson</span>
+                </div>
+                <span class="font-mono text-cyan-400 font-bold">$125.50</span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center text-[11px] text-slate-400">
+              <span>Fulfillment Rate: <strong class="text-emerald-400">96%</strong></span>
+              <span>Daily Orders: <strong class="text-white">42</strong></span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 2: BUSINESS PLAN / HIRING GENERATOR -->
+      <!-- ========================================================================= -->
+      <section id="view-business-plan" class="view-section hidden space-y-4">
+        <div class="widget-card p-6 space-y-4">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <i class="fa-solid fa-lightbulb text-yellow-400"></i>
+            <span>AI Business Plan & Strategic Blueprint</span>
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input id="bpInputNiche" type="text" placeholder="Business Concept / Niche (e.g. AI SaaS, Eco Products)" class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+            <input id="bpInputAudience" type="text" placeholder="Target Market (e.g. Founders, Retailers)" class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+          </div>
+          <button id="generateBpBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 font-bold text-xs text-slate-950 auto-hue-shift shadow-lg">
+            Generate Blueprint
+          </button>
+          <div id="bpOutputArea" class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300 min-h-[200px] leading-relaxed whitespace-pre-wrap">
+            Click 'Generate Blueprint' to assemble AI operational strategy.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 3: COPY & MARKETING GENERATOR -->
+      <!-- ========================================================================= -->
+      <section id="view-copy-generator" class="view-section hidden space-y-4">
+        <div class="widget-card p-6 space-y-4">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <i class="fa-solid fa-pen-nib text-purple-400"></i>
+            <span>Marketing Copy & Social Scheduler Engine</span>
+          </h3>
+          <input id="copyBrandName" type="text" placeholder="Product or Store Name" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+          <textarea id="copyFeatures" rows="3" placeholder="Key value props or features" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white resize-none"></textarea>
+          <button id="generateCopyBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 font-bold text-xs text-white auto-hue-shift">
+            Synthesize Marketing Copy
+          </button>
+          <div id="copyOutputArea" class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300 min-h-[180px] leading-relaxed whitespace-pre-wrap">
+            Generated social posts and ad text will render here.
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 4: LANDING PAGE CREATOR -->
+      <!-- ========================================================================= -->
+      <section id="view-page-builder" class="view-section hidden space-y-4">
+        <div class="widget-card p-6 space-y-4">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <i class="fa-solid fa-globe text-blue-400"></i>
+            <span>Landing Page Creator & Preview</span>
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input id="lpName" type="text" placeholder="Site Name" class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+            <input id="lpHook" type="text" placeholder="Main Headline" class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+          </div>
+          <button id="buildPageBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 font-bold text-xs text-slate-950 auto-hue-shift">
+            Render Landing Page
+          </button>
+          <div class="h-80 w-full bg-slate-900 rounded-xl border border-slate-800 overflow-hidden relative">
+            <iframe id="lpFrame" class="w-full h-full border-none"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 5: SALES LEDGER -->
+      <!-- ========================================================================= -->
+      <section id="view-sales-tracker" class="view-section hidden space-y-4">
+        <div class="widget-card p-6 space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-base font-bold text-white">Financial Ledger & Transactions</h3>
+            <button onclick="document.getElementById('transactionModal').classList.remove('hidden')" class="px-4 py-2 rounded-xl bg-emerald-600 font-bold text-xs text-slate-950">+ Log Sale</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900 uppercase text-slate-400 border-b border-slate-800">
+                <tr>
+                  <th class="p-3">Date</th><th class="p-3">Type</th><th class="p-3">Description</th><th class="p-3 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="transactionTableBody" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 6: SUPPORT BOT KNOWLEDGE BASE -->
+      <!-- ========================================================================= -->
+      <section id="view-support-bot" class="view-section hidden space-y-4">
+        <div class="widget-card p-6 space-y-4">
+          <h3 class="text-base font-bold text-white">Customer Support Training Guidelines</h3>
+          <textarea id="botKnowledge" rows="6" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 resize-none"></textarea>
+          <button id="saveBotKnowledgeBtn" class="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-500 font-bold text-xs text-slate-950 rounded-xl">Update Guidelines</button>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 7: SHOPIFY INTEGRATION -->
+      <!-- ========================================================================= -->
+      <section id="view-shopify-sync" class="view-section hidden space-y-4">
+        <div class="widget-card p-6 space-y-4 max-w-xl mx-auto">
+          <h3 class="text-base font-bold text-white flex items-center space-x-2">
+            <i class="fa-brands fa-shopify text-emerald-400"></i>
+            <span>Shopify Store API Sync</span>
+          </h3>
+          <input id="shopifyStoreUrl" type="text" placeholder="myshopify-store-url.myshopify.com" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+          <button id="saveShopifyCredsBtn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-slate-950 rounded-xl">Connect Store Token</button>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 8: ACCOUNT & PLANS -->
+      <!-- ========================================================================= -->
+      <section id="view-account-plans" class="view-section hidden space-y-4">
+        <div class="text-center py-6">
+          <h3 class="text-xl font-black text-white">Choose Your Growth Tier</h3>
+          <p class="text-xs text-slate-400 mt-1">Free Tier active — Upgrade anytime.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- RIGHT SIDE FLOATING AI ASSISTANT PANEL "AURA" (Exact Match to User Image) -->
+    <!-- ========================================================================= -->
+    <aside class="w-80 border-l border-slate-800/80 bg-[#0d121f]/95 p-4 flex flex-col justify-between hidden xl:flex">
+      
+      <!-- Top Assistant Header Card -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white text-center space-y-2 auto-hue-shift neon-border-glow">
+        <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md mx-auto flex items-center justify-center text-xl shadow-inner">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <h4 class="font-black text-sm tracking-wide">AI Assistant - "Aura"</h4>
+        <span class="inline-block px-2.5 py-0.5 rounded-full bg-black/30 text-[10px] font-bold tracking-wider uppercase border border-white/20">
+          Online & Listening
+        </span>
+      </div>
+
+      <!-- Chat Conversation Sandbox -->
+      <div id="auraChatMessages" class="flex-1 my-4 space-y-3 overflow-y-auto text-xs pr-1">
+        
+        <div class="bg-slate-900/90 p-3 rounded-2xl border border-slate-800 text-slate-300">
+          <span class="text-[9px] font-bold uppercase text-cyan-400 block mb-1">Aura (AI)</span>
+          Based on recent data, I recommend following up with the <strong>"TechCorp"</strong> deal in CRM. Their engagement score has increased.
+        </div>
+
+        <div class="bg-slate-900/90 p-3 rounded-2xl border border-slate-800 text-slate-300">
+          <span class="text-[9px] font-bold uppercase text-purple-400 block mb-1">Aura (AI)</span>
+          Support ticket #1082 regarding API webhooks has been prioritized for admin review.
+        </div>
+
+      </div>
+
+      <!-- Quick Actions Grid (Matching Bottom Right of Reference) -->
+      <div class="space-y-3 pt-2 border-t border-slate-800/80">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Quick Actions</span>
+        
+        <div class="grid grid-cols-2 gap-2 text-center text-[10px]">
+          <button onclick="switchView('business-plan')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-semibold flex flex-col items-center space-y-1">
+            <i class="fa-solid fa-calendar text-cyan-400"></i>
+            <span>Schedule Meeting</span>
+          </button>
+
+          <button onclick="switchView('copy-generator')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-semibold flex flex-col items-center space-y-1">
+            <i class="fa-solid fa-file-contract text-purple-400"></i>
+            <span>Generate Report</span>
+          </button>
+        </div>
+
+        <!-- System Status Box -->
+        <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-between text-[11px]">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-slate-300 font-medium">AI System Status</span>
+          </div>
+          <span class="text-emerald-400 font-bold text-[10px]">Active</span>
+        </div>
+
+        <!-- Chat Input Field -->
+        <form id="auraChatForm" class="flex items-center space-x-2 pt-1">
+          <input id="auraUserInput" type="text" placeholder="Type a message..." class="flex-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500">
+          <button type="submit" class="px-3 py-2 bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl text-slate-950 font-bold text-xs auto-hue-shift">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- TRANSACTION MODAL -->
+  <div id="transactionModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="widget-card p-6 max-w-md w-full space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white">Record Sale</h3>
+        <button onclick="document.getElementById('transactionModal').classList.add('hidden')" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="txForm" class="space-y-3">
+        <input id="txDesc" type="text" placeholder="Customer / Order Title" required class="w-full p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+        <input id="txAmount" type="number" step="0.01" placeholder="Amount ($ USD)" required class="w-full p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+        <button type="submit" class="w-full py-2.5 bg-emerald-600 font-bold text-xs text-slate-950 rounded-xl">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- API KEY MODAL -->
+  <div id="apiKeyModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="widget-card p-6 max-w-md w-full space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white">Gemini API Key</h3>
+        <button id="closeApiModalBtn" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <input id="userGeminiApiKey" type="password" placeholder="AIzaSy..." class="w-full p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white">
+      <div class="flex space-x-2">
+        <button id="saveApiKeyBtn" class="flex-1 py-2 bg-cyan-600 font-bold text-xs text-slate-950 rounded-xl">Save Key</button>
+        <button id="clearApiKeyBtn" class="px-4 py-2 bg-slate-800 text-xs text-slate-300 rounded-xl">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION STATE & CONTROLS -->
+  <script>
+    const DEFAULT_STATE = {
+      user: { name: 'Admin', geminiKey: '' },
+      transactions: [
+        { id: 1, date: '2026-10-24', type: 'sale', desc: 'Order #1082 - Bernard Rivers', amount: 267.00 },
+        { id: 2, date: '2026-10-25', type: 'sale', desc: 'Order #1083 - Akiko Karlson', amount: 125.50 }
+      ],
+      botKnowledge: 'Shipping: Free 3-day delivery over $50. Returns accepted within 30 days.'
+    };
+
+    let appState = JSON.parse(localStorage.getItem('CLIFOUNER_STATE')) || DEFAULT_STATE;
+
+    function saveState() {
+      localStorage.setItem('CLIFOUNER_STATE', JSON.stringify(appState));
+      renderLedger();
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-xl border border-indigo-400/30';
+      toast.innerText = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function switchView(viewId) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.top-nav-btn').forEach(el => {
+        el.classList.remove('bg-indigo-600', 'text-white', 'font-bold');
+        el.classList.add('text-slate-400');
+      });
+
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) target.classList.remove('hidden');
+
+      const navBtn = document.querySelector(`[data-nav="${viewId}"]`);
+      if (navBtn) {
+        navBtn.classList.add('bg-indigo-600', 'text-white', 'font-bold');
+        navBtn.classList.remove('text-slate-400');
+      }
+    }
+
+    // AI Query Engine
+    async function queryGeminiAI(prompt) {
+      const key = appState.user.geminiKey;
+      if (!key) {
+        await new Promise(r => setTimeout(r, 600));
+        return "⚡ Aura AI (Demo Engine): Action executed successfully. Strategic insights updated based on your inputs.";
+      }
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${key}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+        const data = await res.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "Response generated.";
+      } catch (err) {
+        return "Aura AI Demo Response: Parameters evaluated and updated.";
+      }
+    }
+
+    // Business Plan Action
+    document.getElementById('generateBpBtn').addEventListener('click', async () => {
+      const niche = document.getElementById('bpInputNiche').value || 'AI Business';
+      const output = document.getElementById('bpOutputArea');
+      output.innerText = "Synthesizing AI Blueprint...";
+      const res = await queryGeminiAI(`Create business plan for ${niche}`);
+      output.innerText = res;
+      showToast("Strategy Blueprint Generated!");
+    });
+
+    // Marketing Action
+    document.getElementById('generateCopyBtn').addEventListener('click', async () => {
+      const brand = document.getElementById('copyBrandName').value || 'CLIFOUNER';
+      const output = document.getElementById('copyOutputArea');
+      output.innerText = "Crafting copy...";
+      const res = await queryGeminiAI(`Write marketing copy for ${brand}`);
+      output.innerText = res;
+      showToast("Marketing Copy Synthesized!");
+    });
+
+    // Landing Page Builder
+    document.getElementById('buildPageBtn').addEventListener('click', () => {
+      const name = document.getElementById('lpName').value || 'CLIFOUNER Venture';
+      const hook = document.getElementById('lpHook').value || 'Next-Gen Entrepreneurship';
+      const html = `<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"><\/script></head><body class="bg-slate-950 text-white p-12 text-center"><h1 class="text-4xl font-black text-cyan-400">${name}</h1><p class="mt-4 text-slate-300">${hook}</p></body></html>`;
+      document.getElementById('lpFrame').srcdoc = html;
+      showToast("Landing Page Rendered!");
+    });
+
+    // Aura Chat Side Assistant
+    document.getElementById('auraChatForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('auraUserInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('auraChatMessages');
+      container.innerHTML += `<div class="bg-indigo-600/30 p-2.5 rounded-xl text-slate-200 font-medium text-right ml-6">${text}</div>`;
+      input.value = '';
+
+      const reply = await queryGeminiAI(text);
+      container.innerHTML += `<div class="bg-slate-900/90 p-3 rounded-2xl border border-slate-800 text-slate-300"><span class="text-[9px] font-bold uppercase text-cyan-400 block mb-1">Aura (AI)</span>${reply}</div>`;
+      container.scrollTop = container.scrollHeight;
+    });
+
+    // Ledger Render
+    function renderLedger() {
+      const tbody = document.getElementById('transactionTableBody');
+      tbody.innerHTML = '';
+      appState.transactions.forEach(t => {
+        tbody.innerHTML += `<tr><td class="p-3 text-slate-400">${t.date}</td><td class="p-3 uppercase text-emerald-400 font-bold">${t.type}</td><td class="p-3 font-bold text-white">${t.desc}</td><td class="p-3 text-right font-mono font-bold text-emerald-400">$${t.amount.toFixed(2)}</td></tr>`;
+      });
+    }
+
+    document.getElementById('txForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const desc = document.getElementById('txDesc').value;
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      appState.transactions.unshift({ id: Date.now(), date: new Date().toISOString().split('T')[0], type: 'sale', desc, amount });
+      saveState();
+      document.getElementById('transactionModal').classList.add('hidden');
+      showToast("Sale Logged!");
+    });
+
+    // API Modal Handlers
+    document.getElementById('toggleApiKeyBtn').addEventListener('click', () => {
+      document.getElementById('apiKeyModal').classList.remove('hidden');
+    });
+    document.getElementById('closeApiModalBtn').addEventListener('click', () => {
+      document.getElementById('apiKeyModal').classList.add('hidden');
+    });
+    document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
+      appState.user.geminiKey = document.getElementById('userGeminiApiKey').value.trim();
+      saveState();
+      document.getElementById('apiKeyModal').classList.add('hidden');
+      showToast("API Key Stored!");
+    });
+    document.getElementById('clearApiKeyBtn').addEventListener('click', () => {
+      appState.user.geminiKey = '';
+      saveState();
+      document.getElementById('userGeminiApiKey').value = '';
+      showToast("Cleared API key.");
+    });
+
+    window.onload = function() {
+      renderLedger();
+      document.getElementById('buildPageBtn').click();
+    };
+  </script>
+</body>
+</html>
